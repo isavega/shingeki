@@ -12,7 +12,7 @@ import { resources, originTableData } from "../utils/dummyData";
 import { DropdownData, TableData } from "../models";
 
 export default function Home() {
-  const [quantityValue, setQuantityValue] = useState<number>();
+  const [quantityValue, setQuantityValue] = useState<number>(0);
   const [selectedResource, setSelectedResource] =
     useState<DropdownData | null>();
   const [tableData, setTableData] = useState<TableData[]>(originTableData);
@@ -61,7 +61,7 @@ export default function Home() {
           <Title text="Healthatom no kyojin" />
           <Dropdown options={resources} onSelect={handleSelect} />
           <Input
-            value={quantityValue}
+            value={quantityValue || 0}
             onChange={handleInputChange}
             placeholder="Ingresar cantidad"
             measure={selectedResource?.measure || "gramos"}

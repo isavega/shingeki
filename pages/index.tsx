@@ -1,11 +1,50 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-
-const inter = Inter({ subsets: ['latin'] })
+import React, { useState } from "react";
+import Head from "next/head";
+import MainContainer from "@/components/MainContainer";
+import Container from "@/components/Container";
+import Title from "@/components/Title";
+import Dropdown from "@/components/Dropdown";
+import Input from "@/components/Input";
+import Table from "@/components/Table";
+import Button from "@/components/Button";
+import Alert from "@/components/Alert";
+import { resources, originTableData } from "../utils/dummyData";
+import { DropdownData, TableData } from "../models";
 
 export default function Home() {
+  const [quantityValue, setQuantityValue] = useState<number>();
+  const [selectedResource, setSelectedResource] =
+    useState<DropdownData | null>();
+  const [tableData, setTableData] = useState<TableData[]>(originTableData);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+
+  const handleInputChange = (newValue: number) => {
+    setQuantityValue(newValue);
+  };
+
+  const handleSelect = (selectedOption: DropdownData) => {
+    setSelectedResource(selectedOption);
+  };
+
+  const handleIngresar = () => {
+    if (selectedResource && quantityValue > 0) {
+      const newData: TableData = {
+        id: tableData.length + 1,
+        resource: selectedResource.name,
+        quantity: quantityValue + " " + selectedResource?.measure || "",
+        entryDate: new Date().toLocaleDateString(),
+      };
+      setTableData([...tableData, newData]);
+      setSelectedResource(null);
+      setQuantityValue(0);
+    } else {
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 2000);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -14,101 +53,24 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
+      <MainContainer backgroundimage="https://cdn.wallpapersafari.com/50/90/jrzIds.jpg">
+        <Container>
+          {showAlert && (
+            <Alert text="No puedes ingresar un recurso vacío, Eren no lo permite 👀" />
+          )}
+          <Title text="Healthatom no kyojin" />
+          <Dropdown options={resources} onSelect={handleSelect} />
+          <Input
+            value={quantityValue}
+            onChange={handleInputChange}
+            placeholder="Ingresar cantidad"
+            measure={selectedResource?.measure || "gramos"}
           />
-        </div>
+          <Button onClick={handleIngresar}>Ingresar</Button>
 
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+          <Table data={tableData} />
+        </Container>
+      </MainContainer>
     </>
-  )
+  );
 }

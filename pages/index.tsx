@@ -1,48 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import MainContainer from "@/components/MainContainer";
 import Container from "@/components/Container";
 import Title from "@/components/Title";
 import Dropdown from "@/components/Dropdown";
-import Input from "@/components/Input";
-import Table from "@/components/Table";
-import Button from "@/components/Button";
-import Alert from "@/components/Alert";
-import { resources, originTableData } from "../utils/dummyData";
-import { DropdownData, TableData } from "../models";
+
+import { resources } from "../utils/dummyData";
+import { DropdownData } from "../models";
 
 export default function Home() {
-  const [quantityValue, setQuantityValue] = useState<number>(0);
-  const [selectedResource, setSelectedResource] =
-    useState<DropdownData | null>();
-  const [tableData, setTableData] = useState<TableData[]>(originTableData);
-  const [showAlert, setShowAlert] = useState<boolean>(false);
-
-  const handleInputChange = (newValue: number) => {
-    setQuantityValue(newValue);
-  };
+  const router = useRouter();
 
   const handleSelect = (selectedOption: DropdownData) => {
-    setSelectedResource(selectedOption);
-  };
-
-  const handleIngresar = () => {
-    if (selectedResource && quantityValue > 0) {
-      const newData: TableData = {
-        id: tableData.length + 1,
-        resource: selectedResource.name,
-        quantity: quantityValue + " " + selectedResource?.measure || "",
-        entryDate: new Date().toLocaleDateString(),
-      };
-      setTableData([...tableData, newData]);
-      setSelectedResource(null);
-      setQuantityValue(0);
-    } else {
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 2000);
-    }
+    router.push(`/shingeki/amount?rid=${selectedOption.rid}`);
   };
 
   return (
@@ -55,20 +26,8 @@ export default function Home() {
       </Head>
       <MainContainer backgroundimage="https://cdn.wallpapersafari.com/50/90/jrzIds.jpg">
         <Container>
-          {showAlert && (
-            <Alert text="No puedes ingresar un recurso vacío, Eren no lo permite 👀" />
-          )}
           <Title text="Healthatom no kyojin" />
           <Dropdown options={resources} onSelect={handleSelect} />
-          <Input
-            value={quantityValue || 0}
-            onChange={handleInputChange}
-            placeholder="Ingresar cantidad"
-            measure={selectedResource?.measure || "gramos"}
-          />
-          <Button onClick={handleIngresar}>Ingresar</Button>
-
-          <Table data={tableData} />
         </Container>
       </MainContainer>
     </>

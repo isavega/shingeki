@@ -42,7 +42,9 @@ const Input: React.FC<InputProps> = ({
 }) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(event.target.value);
-    onChange(newValue);
+    if (!isNaN(newValue) && Number.isInteger(newValue)) {
+      onChange(newValue);
+    }
   };
 
   return (

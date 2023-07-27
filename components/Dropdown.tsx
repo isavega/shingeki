@@ -11,6 +11,7 @@ interface DropdownData {
 
 interface DropdownProps {
   options: Array<DropdownData>;
+  preSelectedOption?: DropdownData | null;
   onSelect: (selectedOption: DropdownData) => void;
 }
 
@@ -63,9 +64,15 @@ const DropdownItem = styled.li`
   }
 `;
 
-const Dropdown: React.FC<DropdownProps> = ({ options, onSelect }) => {
+const Dropdown: React.FC<DropdownProps> = ({
+  options,
+  preSelectedOption,
+  onSelect,
+}) => {
   const [isopen, setisopen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(
+    preSelectedOption?.name || null
+  );
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleItemClick = (option: DropdownData) => {

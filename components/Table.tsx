@@ -12,6 +12,7 @@ interface TableData {
 
 interface TableProps {
   data: Array<TableData>;
+  handleDeleteRow: (id: number) => void;
 }
 
 const TableContainer = styled.table`
@@ -42,12 +43,8 @@ const DeleteIcon = styled(FontAwesomeIcon)`
   height: 16px;
 `;
 
-const Table: React.FC<TableProps> = ({ data }) => {
+const Table: React.FC<TableProps> = ({ data, handleDeleteRow }) => {
   const [tableData, setTableData] = useState<TableData[]>(data);
-
-  const handleDeleteRow = (id: number) => {
-    setTableData(tableData.filter((row) => row.id !== id));
-  };
 
   useEffect(() => {
     setTableData(data);

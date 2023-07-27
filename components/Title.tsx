@@ -5,7 +5,7 @@ interface TitleProps {
   text: string;
 }
 
-const StyledTitle = styled.h1`
+const StyledTitle = styled.p`
   font-family: "Raleway", sans-serif;
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 300;
